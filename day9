@@ -1,0 +1,22 @@
+class Solution {
+    public int maxWater(int arr[]) {
+        if (arr == null || arr.length == 0) return 0;
+        
+        int left = 0, right = arr.length - 1;
+        int leftMax = 0, rightMax = 0;
+        int ans = 0;
+        
+        while (left < right) {
+            if (arr[left] < arr[right]) {
+                leftMax = Math.max(leftMax, arr[left]);
+                ans += leftMax - arr[left];
+                left++;
+            } else {
+                rightMax = Math.max(rightMax, arr[right]);
+                ans += rightMax - arr[right];
+                right--;
+            }
+        }
+        return ans;
+    }
+}
