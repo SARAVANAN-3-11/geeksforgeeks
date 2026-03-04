@@ -1,0 +1,26 @@
+class Solution {
+    public int maxSubarrayXOR(int[] arr, int k) {
+        // code here
+         int n = arr.length;
+        int maxXor = 0;
+        
+        // Compute XOR of first subarray [0, k-1]
+        int currXor = 0;
+        for (int i = 0; i < k; i++) {
+            currXor ^= arr[i];
+        }
+        maxXor = currXor;
+        
+        // Slide the window
+        for (int i = k; i < n; i++) {
+            // XOR out the leaving element arr[i-k]
+            currXor ^= arr[i - k];
+            // XOR in the new element arr[i]
+            currXor ^= arr[i];
+            // Update maximum
+            maxXor = Math.max(maxXor, currXor);
+        }
+        
+        return maxXor;
+    }
+}
