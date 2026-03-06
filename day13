@@ -1,0 +1,55 @@
+class Solution {
+    public static String minWindow(String s, String p) {
+        // code here
+         int n = s.length();
+        int m = p.length();
+
+        if (n < m) return "";
+
+        // Frequency of characters in pattern
+        int[] freqP = new int[256];
+        for (int i = 0; i < m; i++) {
+            freqP[p.charAt(i)]++;
+        }
+
+        int[] freqS = new int[256];
+        int start = 0;           // left pointer of window
+        int minLen = Integer.MAX_VALUE;
+        int startIdx = -1;       // best window start index
+        int matched = 0;         // number of pattern chars matched (with multiplicity)
+
+        for (int end = 0; end < n; end++) {
+            char ch = s.charAt(end);
+            freqS[ch]++;
+
+            // Count this char only if it is needed and we have not exceeded its need
+            if (freqP[ch] > 0 && freqS[ch] <= freqP[ch]) {
+                matched++;
+            }
+
+            // When all pattern chars are matched, try to shrink from left
+            if (matched == m) {
+                // Move start to remove extra/unnecessary chars
+                while (start < end) {
+                    char startCh = s.charAt(start);
+                    // If this char is not needed or we have more than required, shrink
+                    if (freqP[startCh] == 0 || freqS[startCh] > freqP[startCh]) {
+                        freqS[startCh]--;
+                        start++;
+                    } else {
+                        break;
+                    }
+                }
+
+                int windowLen = end - start + 1;
+                if (windowLen < minLen) {
+                    minLen = windowLen;
+                    startIdx = start;
+                }
+            }
+        }
+
+        if (startIdx == -1) return "";
+        return s.substring(startIdx, startIdx + minLen);
+    }
+}
