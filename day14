@@ -1,0 +1,17 @@
+class Solution {
+    static int noOfWays(int m, int n, int x) {
+        // code here
+                long[][] dp = new long[n + 1][x + 1];
+        dp[0][0] = 1;
+        for (int i = 1; i <= n; i++) {
+            for (int s = x; s >= 0; s--) {
+                for (int f = 1; f <= m; f++) {
+                    if (s >= f) {
+                        dp[i][s] += dp[i - 1][s - f];
+                    }
+                }
+            }
+        }
+        return (int) dp[n][x];
+    }
+};
