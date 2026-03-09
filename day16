@@ -1,0 +1,38 @@
+class Solution {
+    public String largestSwap(String s) {
+        // code here
+         char[] arr = s.toCharArray();
+        int n = arr.length;
+        
+        // Find the rightmost position i where swapping with some j > i increases the string
+        int i = -1;
+        for (int pos = 0; pos < n - 1; pos++) {
+            // Find largest char to the right of pos
+            char maxRight = arr[pos];
+            int maxIdx = pos;
+            for (int j = pos + 1; j < n; j++) {
+                if (arr[j] > maxRight) {
+                    maxRight = arr[j];
+                    maxIdx = j;
+                }
+            }
+            // If swapping pos with maxIdx makes it larger, this is our position
+            if (maxRight > arr[pos]) {
+                i = pos;
+                // Among all possible j's, choose rightmost one to maximize suffix
+                for (int j = maxIdx + 1; j < n; j++) {
+                    if (arr[j] == maxRight) {
+                        maxIdx = j;
+                    }
+                }
+                // Perform the swap
+                char temp = arr[i];
+                arr[i] = arr[maxIdx];
+                arr[maxIdx] = temp;
+                break;
+            }
+        }
+        
+        return new String(arr);
+    }
+}
