@@ -1,0 +1,28 @@
+class Solution {
+    public int countSubarrays(int[] arr) {
+        // code here
+        int n = arr.length;
+        long ans = 0;                // use long to be safe for large n
+        Stack<Integer> st = new Stack<>();
+
+        // Traverse from right to left
+        for (int i = n - 1; i >= 0; i--) {
+            // Maintain increasing stack (by values)
+            while (!st.isEmpty() && arr[st.peek()] >= arr[i]) {
+                st.pop();
+            }
+
+            // If stack empty, no smaller element to the right
+            int nextSmallerIndex = st.isEmpty() ? n : st.peek();
+
+            // Number of valid subarrays starting at i
+            ans += (nextSmallerIndex - i);
+
+            // Push current index
+            st.push(i);
+        }
+
+        // As per GFG constraints, result fits in int
+        return (int) ans;
+    }
+}
