@@ -1,0 +1,52 @@
+import java.util.*;
+
+class Solution {
+    public ArrayList<Integer> topView(Node root) {
+        ArrayList<Integer> result = new ArrayList<>();
+        if (root == null) return result;
+        
+        // Map to store first node value at each horizontal distance
+        Map<Integer, Integer> map = new TreeMap<>();
+        // Queue stores (node, horizontal distance)
+        Queue<Pair> queue = new LinkedList<>();
+        queue.add(new Pair(root, 0));
+        
+        while (!queue.isEmpty()) {
+            Pair front = queue.poll();
+            Node node = front.node;
+            int hd = front.hd;
+            
+            // Store only if this horizontal distance is seen for first time
+            if (!map.containsKey(hd)) {
+                map.put(hd, node.data);
+            }
+            
+            // Add left child with hd-1
+            if (node.left != null) {
+                queue.add(new Pair(node.left, hd - 1));
+            }
+            // Add right child with hd+1  
+            if (node.right != null) {
+                queue.add(new Pair(node.right, hd + 1));
+            }
+        }
+        
+        // TreeMap maintains sorted order of horizontal distances
+        for (int val : map.values()) {
+            result.add(val);
+        }
+        
+        return result;
+    }
+    
+    // Helper class to store node and horizontal distance
+    class Pair {
+        Node node;
+        int hd;
+        
+        Pair(Node node, int hd) {
+            this.node = node;
+            this.hd = hd;
+        }
+    }
+}
