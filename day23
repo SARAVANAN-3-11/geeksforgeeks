@@ -1,0 +1,36 @@
+import java.util.*;
+
+class Solution {
+    public int countAllPaths(Node root, int k) {
+        Map<Long, Integer> prefixCount = new HashMap<>();
+        prefixCount.put(0L, 1);  // Initialize with 0:1 for paths starting from current node
+        return dfs(root, k, 0L, prefixCount);
+    }
+    
+    private int dfs(Node node, int k, long currentSum, Map<Long, Integer> prefixCount) {
+        if (node == null) {
+            return 0;
+        }
+        
+        // Update current sum to include this node
+        currentSum += node.data;
+        
+        // Count paths ending at current node: prefix[current] - prefix[ancestor] = k
+        int count = prefixCount.getOrDefault(currentSum - k, 0);
+        
+        // Add current prefix sum to map
+        prefixCount.put(currentSum, prefixCount.getOrDefault(currentSum, 0) + 1);
+        
+        // Recurse on children
+        count += dfs(node.left, k, currentSum, prefixCount);
+        count += dfs(node.right, k, currentSum, prefixCount);
+        
+        // Backtrack: remove current prefix sum
+        prefixCount.put(currentSum, prefixCount.get(currentSum) - 1);
+        if (prefixCount.get(currentSum) == 0) {
+            prefixCount.remove(currentSum);
+        }
+        
+        return count;
+    }
+}
