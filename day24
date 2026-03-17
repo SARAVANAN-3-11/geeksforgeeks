@@ -1,0 +1,63 @@
+class Solution {
+    int maxTime = 0;
+    
+    public int minTime(Node root, int target) {
+        // Step 1: Build parent map + find target
+        Map<Node, Node> parentMap = new HashMap<>();
+        Node targetNode = findTarget(root, target, null, parentMap);
+        
+        // Step 2: BFS from target with parent spreading
+        bfsBurnTime(targetNode, parentMap);
+        
+        return maxTime;
+    }
+    
+    private Node findTarget(Node node, int target, Node parent, Map<Node, Node> parentMap) {
+        if (node == null) return null;
+        
+        if (node.data == target) {
+            if (parent != null) parentMap.put(node, parent);
+            return node;
+        }
+        
+        if (parent != null) parentMap.put(node, parent);
+        
+        Node leftRes = findTarget(node.left, target, node, parentMap);
+        if (leftRes != null) return leftRes;
+        
+        return findTarget(node.right, target, node, parentMap);
+    }
+    
+    private void bfsBurnTime(Node targetNode, Map<Node, Node> parentMap) {
+        Queue<Node> queue = new LinkedList<>();
+        Map<Node, Integer> burnTime = new HashMap<>();
+        
+        burnTime.put(targetNode, 0);
+        queue.offer(targetNode);
+        
+        while (!queue.isEmpty()) {
+            Node curr = queue.poll();
+            int currTime = burnTime.get(curr);
+            maxTime = Math.max(maxTime, currTime);
+            
+            // Spread to LEFT child
+            if (curr.left != null && !burnTime.containsKey(curr.left)) {
+                burnTime.put(curr.left, currTime + 1);
+                queue.offer(curr.left);
+            }
+            
+            // Spread to RIGHT child  
+            if (curr.right != null && !burnTime.containsKey(curr.right)) {
+                burnTime.put(curr.right, currTime + 1);
+                queue.offer(curr.right);
+            }
+            
+            // Spread to PARENT
+            Node parent = parentMap.get(curr);
+            if (parent != null && !burnTime.containsKey(parent)) {
+                burnTime.put(parent, currTime + 1);
+                queue.offer(parent);
+            }
+        }
+    }
+}
