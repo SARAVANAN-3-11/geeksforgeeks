@@ -1,0 +1,37 @@
+/*
+class Node {
+    int data;
+    Node left;
+    Node right;
+    Node(int data) {
+        this.data = data;
+        left = null;
+        right = null;
+    }
+}
+*/
+
+class Solution {
+    int ans = 0;
+
+    public int distCandy(Node root) {
+        ans = 0;
+        dfs(root);
+        return ans;
+    }
+
+    private int dfs(Node root) {
+        if (root == null) return 0;
+
+        // left and right subtrees' excess/deficit
+        int left = dfs(root.left);
+        int right = dfs(root.right);
+
+        // each edge (root–left and root–right) contributes |flow| moves
+        ans += Math.abs(left) + Math.abs(right);
+
+        // current node's balance: (existing candies) + left flow + right flow - 1
+        // remaining will be passed to parent (could be +ve or -ve)
+        return root.data + left + right - 1;
+    }
+}
