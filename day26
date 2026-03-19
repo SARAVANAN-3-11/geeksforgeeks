@@ -1,0 +1,64 @@
+// class Node
+// {
+//     int data;
+//     Node left, right;
+
+//     public Node(int d)
+//     {
+//         data = d;
+//         left = right = null;
+//     }
+// }
+
+class Solution {
+    
+    static class Info {
+        int size;
+        int min;
+        int max;
+        boolean isBST;
+        
+        Info(int size, int min, int max, boolean isBST) {
+            this.size = size;
+            this.min = min;
+            this.max = max;
+            this.isBST = isBST;
+        }
+    }
+    
+    // Return the size of the largest sub-tree which is also a BST
+    static int largestBst(Node root) {
+        if (root == null) return 0;
+        
+        int[] maxSize = {0};
+        helper(root, maxSize);
+        return maxSize[0];
+    }
+    
+    private static Info helper(Node node, int[] maxSize) {
+        if (node == null) {
+            return new Info(0, Integer.MAX_VALUE, Integer.MIN_VALUE, true);
+        }
+        
+        // Process left subtree
+        Info leftInfo = helper(node.left, maxSize);
+        Info rightInfo = helper(node.right, maxSize);
+        
+        // Check if current subtree is BST
+        boolean isBST = leftInfo.isBST && rightInfo.isBST && 
+                       (node.left == null || node.data > leftInfo.max) &&
+                       (node.right == null || node.data < rightInfo.min);
+        
+        int currSize = 1 + leftInfo.size + rightInfo.size;
+        if (isBST) {
+            currSize = 1 + leftInfo.size + rightInfo.size;
+            maxSize[0] = Math.max(maxSize[0], currSize);
+        }
+        
+        // Calculate min, max for current subtree
+        int min = Math.min(node.data, Math.min(leftInfo.min, rightInfo.min));
+        int max = Math.max(node.data, Math.max(leftInfo.max, rightInfo.max));
+        
+        return new Info(currSize, min, max, isBST);
+    }
+}
