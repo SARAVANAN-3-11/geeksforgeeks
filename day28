@@ -1,0 +1,25 @@
+class Solution {
+    public ArrayList<Integer> countBSTs(int[] arr) {
+        int n = arr.length;
+        Integer[][] sorted = new Integer[n][2];
+        for (int i = 0; i < n; i++) {
+            sorted[i] = new Integer[]{arr[i], i};
+        }
+        Arrays.sort(sorted, (a, b) -> a[0] - b[0]);
+        
+        ArrayList<Integer> fact = new ArrayList<>(Collections.nCopies(2 * n + 1, 1));
+        for (int i = 1; i <= 2 * n; i++) {
+            fact.set(i, fact.get(i - 1) * i);
+        }
+        
+        ArrayList<Integer> numBSTs = new ArrayList<>(Collections.nCopies(n, 0));
+        for (int i = 0; i < n; i++) {
+            int left = i;
+            int right = n - i - 1;
+            int catLeft = fact.get(2 * left) / (fact.get(left) * fact.get(left + 1));
+            int catRight = fact.get(2 * right) / (fact.get(right) * fact.get(right + 1));
+            numBSTs.set(sorted[i][1], catLeft * catRight);
+        }
+        return numBSTs;
+    }
+}
