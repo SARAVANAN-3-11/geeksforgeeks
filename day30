@@ -1,0 +1,51 @@
+class Solution {
+    public int longestCycle(int V, int[][] edges) {
+        int[] next = new int[V];
+        boolean[] visited = new boolean[V];
+        int maxLen = -1;
+        
+        // Initialize next array
+        Arrays.fill(next, -1);
+        for (int[] edge : edges) {
+            next[edge[0]] = edge[1];
+        }
+        
+        for (int i = 0; i < V; i++) {
+            if (!visited[i] && next[i] != -1) {
+                int len = detectCycle(i, next, visited, V);
+                maxLen = Math.max(maxLen, len);
+            }
+        }
+        
+        return maxLen;
+    }
+    
+    private int detectCycle(int start, int[] next, boolean[] visited, int V) {
+        int[] path = new int[V];  // Fixed: V passed as parameter
+        int pathIdx = 0;
+        int curr = start;
+        
+        // Phase 1: Traverse until cycle or dead end
+        while (curr != -1 && !visited[curr]) {
+            visited[curr] = true;
+            path[pathIdx++] = curr;
+            curr = next[curr];
+            
+            // Check bounds before accessing visited[curr]
+            if (curr >= 0 && curr < V && visited[curr]) {
+                break;  // Hit previously visited node
+            }
+        }
+        
+        // Phase 2: Check if curr is in current path (cycle found)
+        if (curr >= 0 && curr < V) {
+            for (int i = 0; i < pathIdx; i++) {
+                if (path[i] == curr) {
+                    return pathIdx - i;  // Cycle length
+                }
+            }
+        }
+        
+        return -1;
+    }
+}
