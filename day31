@@ -1,0 +1,41 @@
+class Solution {
+    public boolean canFinish(int n, int[][] prerequisites) {
+        // Build adjacency list: prerequisites[i] = [x,y] means y -> x (y before x)
+        List<List<Integer>> adj = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            adj.add(new ArrayList<>());
+        }
+        
+        for (int[] pre : prerequisites) {
+            adj.get(pre[1]).add(pre[0]);  // pre[1] -> pre[0]
+        }
+        
+        // 0: unvisited, 1: visiting, 2: visited
+        int[] color = new int[n];
+        
+        for (int i = 0; i < n; i++) {
+            if (color[i] == 0) {
+                if (hasCycle(i, adj, color)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
+    private boolean hasCycle(int node, List<List<Integer>> adj, int[] color) {
+        color[node] = 1;  // Mark as visiting
+        
+        for (int neighbor : adj.get(node)) {
+            if (color[neighbor] == 1) {
+                return true;  // Cycle detected
+            }
+            if (color[neighbor] == 0 && hasCycle(neighbor, adj, color)) {
+                return true;
+            }
+        }
+        
+        color[node] = 2;  // Mark as visited
+        return false;
+    }
+}
