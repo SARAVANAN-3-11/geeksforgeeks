@@ -1,0 +1,45 @@
+class Solution {
+    public int maxChocolate(int[][] grid) {
+        int n = grid.length;
+        int m = grid[0].length;
+        
+        long[][] prev = new long[m][m];
+        
+        // Initialize ONLY starting positions: robot1 at col 0, robot2 at col m-1
+        prev[0][m-1] = grid[0][0] + grid[0][m-1];
+        
+        for (int r = 1; r < n; r++) {
+            long[][] curr = new long[m][m];
+            
+            for (int c1 = 0; c1 < m; c1++) {
+                for (int c2 = 0; c2 < m; c2++) {
+                    long maxVal = 0;
+                    
+                    // Robot1 previous positions (c1-1, c1, c1+1)
+                    for (int p1 = Math.max(0, c1-1); p1 <= Math.min(m-1, c1+1); p1++) {
+                        // Robot2 previous positions (c2-1, c2, c2+1)  
+                        for (int p2 = Math.max(0, c2-1); p2 <= Math.min(m-1, c2+1); p2++) {
+                            long prevVal = prev[p1][p2];
+                            if (prevVal == 0 && !(r == 1 && p1 == 0 && p2 == m-1)) continue;
+                            
+                            long currChoco = grid[r][c1];
+                            if (c1 != c2) currChoco += grid[r][c2];
+                            
+                            maxVal = Math.max(maxVal, prevVal + currChoco);
+                        }
+                    }
+                    curr[c1][c2] = maxVal;
+                }
+            }
+            prev = curr;
+        }
+        
+        long ans = 0;
+        for (int c1 = 0; c1 < m; c1++) {
+            for (int c2 = 0; c2 < m; c2++) {
+                ans = Math.max(ans, prev[c1][c2]);
+            }
+        }
+        return (int)ans;
+    }
+}
