@@ -1,0 +1,72 @@
+import java.util.*;
+
+class Solution {
+    private int[] disc, low;
+    private boolean[] visited, ap;
+    private int timer;
+    private List<List<Integer>> adj;
+
+    static ArrayList<Integer> articulationPoints(int V, int[][] edges) {
+        Solution sol = new Solution();
+        return sol.solve(V, edges);
+    }
+
+    private ArrayList<Integer> solve(int V, int[][] edges) {
+        disc = new int[V];
+        low  = new int[V];
+        visited = new boolean[V];
+        ap   = new boolean[V];
+        timer = 0;
+
+        adj = new ArrayList<>();
+        for (int i = 0; i < V; i++) adj.add(new ArrayList<>());
+        for (int[] e : edges) {
+            adj.get(e[0]).add(e[1]);
+            adj.get(e[1]).add(e[0]);
+        }
+
+        // Handle disconnected graphs
+        for (int i = 0; i < V; i++) {
+            if (!visited[i]) dfs(i, -1);
+        }
+
+        ArrayList<Integer> result = new ArrayList<>();
+        for (int i = 0; i < V; i++) {
+            if (ap[i]) result.add(i);
+        }
+
+        if (result.isEmpty()) result.add(-1);
+        Collections.sort(result);
+        return result;
+    }
+
+    private void dfs(int u, int parent) {
+        visited[u] = true;
+        disc[u] = low[u] = timer++;
+        int childCount = 0;
+
+        for (int v : adj.get(u)) {
+            if (!visited[v]) {
+                childCount++;
+                dfs(v, u);
+
+                // Pull up the lowest reachable from subtree
+                low[u] = Math.min(low[u], low[v]);
+
+                // Non-root case: v's subtree can't reach above u
+                if (parent != -1 && low[v] >= disc[u]) {
+                    ap[u] = true;
+                }
+
+                // Root case: root is AP if it has 2+ children
+                if (parent == -1 && childCount == 2) {
+                    ap[u] = true;
+                }
+
+            } else if (v != parent) {
+                // Back edge — update low with ancestor's disc time
+                low[u] = Math.min(low[u], disc[v]);
+            }
+        }
+    }
+}
