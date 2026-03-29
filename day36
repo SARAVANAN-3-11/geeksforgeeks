@@ -1,0 +1,32 @@
+class Solution {
+    public int countPartitions(int[] arr, int diff) {
+        int n = arr.length;
+        int totalSum = 0;
+        for (int x : arr) totalSum += x;
+
+        // S1 - S2 = diff, S1 + S2 = totalSum  =>  S1 = (totalSum + diff) / 2
+        int numerator = totalSum + diff;
+
+        // If odd, no valid integer partition exists
+        if (numerator % 2 != 0) return 0;
+
+        int target = numerator / 2;
+
+        // target can't be negative (would mean diff > totalSum)
+        if (target < 0) return 0;
+
+        // dp[s] = number of subsets with sum s
+        // Using 1D space-optimized DP (iterate sum right-to-left to avoid reuse)
+        int[] dp = new int[target + 1];
+        dp[0] = 1; // empty subset always achieves sum 0
+
+        for (int i = 0; i < n; i++) {
+            // Traverse right-to-left to ensure each element used at most once
+            for (int s = target; s >= arr[i]; s--) {
+                dp[s] += dp[s - arr[i]];
+            }
+        }
+
+        return dp[target];
+    }
+}
