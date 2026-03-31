@@ -1,0 +1,25 @@
+class Solution {
+    public int maxProfit(int[] arr, int k) {
+        int n = arr.length;
+        if (n <= 1) return 0;
+
+        // free = max profit when NOT holding a stock
+        // hold = max profit when HOLDING a stock
+        int free = 0;
+        int hold = -arr[0]; // best case: bought on day 0
+
+        for (int i = 1; i < n; i++) {
+            int prevFree = free; // snapshot before update (used in hold transition)
+
+            // Sell today: gain arr[i], pay fee k
+            free = Math.max(free, hold + arr[i] - k);
+
+            // Buy today: pay arr[i]
+            // Use prevFree to avoid using today's free (no same-day buy+sell)
+            hold = Math.max(hold, prevFree - arr[i]);
+        }
+
+        // Best answer is always in free state (selling is always >= holding)
+        return free;
+    }
+}
