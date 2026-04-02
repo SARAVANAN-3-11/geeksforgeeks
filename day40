@@ -1,0 +1,20 @@
+class Solution {
+    public int countWays(int n, int k) {
+        if (n == 1) return k;
+        if (n == 2) return k * k;
+
+        // same = ways ending with 2 consecutive same-colored posts
+        // diff = ways ending with 2 consecutive different-colored posts
+        long same = k;           // post 0+1 both same color: k ways
+        long diff = k * (k - 1); // post 0+1 different colors: k*(k-1) ways
+
+        for (int i = 2; i < n; i++) {
+            long newSame = diff;               // only diff→same allowed (1 color choice)
+            long newDiff = (same + diff) * (k - 1); // any state → diff (k-1 choices)
+            same = newSame;
+            diff = newDiff;
+        }
+
+        return (int)(same + diff);
+    }
+}
