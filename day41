@@ -1,0 +1,22 @@
+class Solution {
+    public ArrayList<Integer> diagView(int[][] mat) {
+        int n = mat.length;
+        ArrayList<Integer> result = new ArrayList<>();
+
+        // d = i+j, ranges from 0 (top-left) to 2*(n-1) (bottom-right)
+        for (int d = 0; d <= 2 * (n - 1); d++) {
+
+            // i ranges: at least 0, at most n-1, and j=d-i must also be in [0,n-1]
+            // j = d - i >= 0  =>  i <= d
+            // j = d - i <= n-1 =>  i >= d - (n-1)
+            int iStart = Math.max(0, d - (n - 1));
+            int iEnd   = Math.min(d, n - 1);
+
+            for (int i = iStart; i <= iEnd; i++) {
+                result.add(mat[i][d - i]);
+            }
+        }
+
+        return result;
+    }
+}
