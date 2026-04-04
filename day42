@@ -1,0 +1,17 @@
+class Solution {
+    public ArrayList<String> graycode(int n) {
+        ArrayList<String> result = new ArrayList<>();
+
+        for (int i = 0; i < (1 << n); i++) {
+            int gray = i ^ (i >> 1);
+
+            // Convert to binary string, then zero-pad to length n
+            String binary = Integer.toBinaryString(gray);
+            String padded = "0".repeat(n - binary.length()) + binary;
+
+            result.add(padded);
+        }
+
+        return result;
+    }
+}
