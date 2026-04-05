@@ -1,0 +1,29 @@
+class Solution {
+    public int countWays(int[] arr, int target) {
+        int totalSum = 0;
+        for (int x : arr) totalSum += x;
+
+        // Target out of range
+        if (Math.abs(target) > totalSum) return 0;
+
+        int numerator = totalSum + target;
+
+        // Must be even for integer subset sum
+        if (numerator % 2 != 0) return 0;
+
+        int P = numerator / 2;
+
+        // dp[s] = number of subsets that sum to s
+        int[] dp = new int[P + 1];
+        dp[0] = 1; // empty subset
+
+        for (int x : arr) {
+            // Right-to-left to avoid reusing same element
+            for (int s = P; s >= x; s--) {
+                dp[s] += dp[s - x];
+            }
+        }
+
+        return dp[P];
+    }
+}
