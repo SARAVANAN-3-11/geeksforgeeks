@@ -1,0 +1,65 @@
+class Solution {
+    static class Node {
+        int freq;
+        int index;
+        char ch;
+        Node left, right;
+        
+        Node(int f, int i, char c) {
+            freq = f;
+            index = i;
+            ch = c;
+            left = right = null;
+        }
+        
+        Node(int f, int i, Node l, Node r) {
+            freq = f;
+            index = i;
+            left = l;
+            right = r;
+        }
+    }
+    
+    public ArrayList<String> huffmanCodes(String s, int f[]) {
+        int n = s.length();
+        ArrayList<String> codes = new ArrayList<>();
+        if (n == 1) {
+            codes.add("0");
+            return codes;
+        }
+        
+        PriorityQueue<Node> pq = new PriorityQueue<>((a, b) -> {
+            if (a.freq != b.freq) {
+                return a.freq - b.freq;
+            }
+            return a.index - b.index;
+        });
+        
+        for (int i = 0; i < n; i++) {
+            pq.offer(new Node(f[i], i, s.charAt(i)));
+        }
+        
+        while (pq.size() > 1) {
+            Node left = pq.poll();
+            Node right = pq.poll();
+            Node merged = new Node(left.freq + right.freq, 
+                                 Math.min(left.index, right.index), 
+                                 left, right);
+            pq.offer(merged);
+        }
+        
+        Node root = pq.poll();
+        getCodes(root, "", codes);
+        return codes;
+    }
+    
+    private void getCodes(Node node, String code, ArrayList<String> codes) {
+        if (node == null) return;
+        if (node.left == null && node.right == null) {
+            codes.add(code);
+            return;
+        }
+        getCodes(node.left, code + "0", codes);
+        getCodes(node.right, code + "1", codes);
+    }
+}
