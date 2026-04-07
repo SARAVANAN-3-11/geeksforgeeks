@@ -1,0 +1,61 @@
+class Solution {
+    public int[] stableMarriage(int[][] men, int[][] women) {
+        int n = men.length;
+        
+        // wPartner[w] = which man is paired with woman w
+        int[] wPartner = new int[n];
+        // mPartner[m] = which woman is paired with man m (this is the result)
+        int[] mPartner = new int[n];
+        // next[m] = index of next woman to propose to in men[m]
+        int[] next = new int[n];
+        // freeMan[m] = true if man m is still free
+        boolean[] freeMan = new boolean[n];
+        
+        // Initialize
+        for (int i = 0; i < n; i++) {
+            wPartner[i] = -1;
+            mPartner[i] = -1;
+            freeMan[i] = true;
+        }
+        
+        int freeCount = n;
+        while (freeCount > 0) {
+            // Pick a free man
+            int m = 0;
+            while (m < n && !freeMan[m]) m++;
+            
+            // He proposes to the next woman in his list
+            int w = men[m][next[m]];
+            next[m]++;
+            
+            if (wPartner[w] == -1) {
+                // w is free: accept immediately
+                wPartner[w] = m;
+                mPartner[m] = w;
+                freeMan[m] = false;
+                freeCount--;
+            } else {
+                // w already has partner m1; check if she prefers m over m1
+                int m1 = wPartner[w];
+                if (prefers(women, w, m, m1)) {
+                    // w prefers m: dump m1 and accept m
+                    wPartner[w] = m;
+                    mPartner[m] = w;
+                    freeMan[m] = false;
+                    freeMan[m1] = true;
+                }
+            }
+        }
+        
+        return mPartner;
+    }
+    
+    // Returns true if woman w prefers man m over man m1
+    private boolean prefers(int[][] women, int w, int m, int m1) {
+        for (int i = 0; i < women[w].length; i++) {
+            if (women[w][i] == m) return true;
+            if (women[w][i] == m1) return false;
+        }
+        return false;
+    }
+}
