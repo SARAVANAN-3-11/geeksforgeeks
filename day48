@@ -1,0 +1,37 @@
+class Solution {
+    public ArrayList<Integer> find3Numbers(int[] arr) {
+        int n = arr.length;
+        
+        // small = smallest element seen so far
+        // large = second smallest element seen so far (candidate for middle)
+        int small = Integer.MAX_VALUE;
+        int large = Integer.MAX_VALUE;
+        
+        for (int i = 0; i < n; i++) {
+            // Update smallest element
+            if (arr[i] < small) {
+                small = arr[i];
+            }
+            // Update second smallest (must be > small)
+            else if (arr[i] > small && arr[i] < large) {
+                large = arr[i];
+            }
+            // Found third element > large (and > small since large > small)
+            else if (arr[i] > large) {
+                ArrayList<Integer> result = new ArrayList<>();
+                // Find actual first element (smallest before large's position)
+                for (int j = 0; j < i; j++) {
+                    if (arr[j] < large) {
+                        result.add(arr[j]);
+                        break;
+                    }
+                }
+                result.add(large);
+                result.add(arr[i]);
+                return result;
+            }
+        }
+        
+        return new ArrayList<>();
+    }
+}
