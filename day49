@@ -1,0 +1,24 @@
+class Solution {
+    public int countIncreasing(int[] arr) {
+        int n = arr.length;
+        if (n < 2) return 0;
+        
+        int count = 0;
+        int length = 1;
+        
+        for (int i = 1; i < n; i++) {
+            if (arr[i] > arr[i-1]) {
+                length++;
+            } else {
+                // For a streak of length L, number of subarrays ≥ 2 is (L*(L-1))/2
+                count += (length * (length - 1)) / 2;
+                length = 1;
+            }
+        }
+        
+        // Don't forget the last streak
+        count += (length * (length - 1)) / 2;
+        
+        return count;
+    }
+}
