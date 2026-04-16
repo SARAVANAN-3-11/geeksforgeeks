@@ -1,0 +1,36 @@
+class Solution {
+    public int myAtoi(String s) {
+        int i = 0;
+        int n = s.length();
+        int sign = 1;
+        int base = 0;
+        int INT_MAX = 2147483647;
+        int INT_MIN = -2147483648;
+        
+        // Skip leading whitespaces
+        while (i < n && s.charAt(i) == ' ') {
+            i++;
+        }
+        
+        // Handle sign
+        if (i < n && (s.charAt(i) == '+' || s.charAt(i) == '-')) {
+            sign = (s.charAt(i) == '-') ? -1 : 1;
+            i++;
+        }
+        
+        // Read digits and handle overflow
+        while (i < n && Character.isDigit(s.charAt(i))) {
+            int digit = s.charAt(i) - '0';
+            
+            // Overflow check before updating base
+            if (base > (INT_MAX / 10) || (base == (INT_MAX / 10) && digit > 7)) {
+                return (sign == 1) ? INT_MAX : INT_MIN;
+            }
+            
+            base = base * 10 + digit;
+            i++;
+        }
+        
+        return base * sign;
+    }
+}
