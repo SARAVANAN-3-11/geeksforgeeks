@@ -1,0 +1,17 @@
+class Solution {
+    int maxOnes(int[] arr) {
+        int n = arr.length;
+        int origOnes = 0;
+        for (int val : arr) {
+            if (val == 1) origOnes++;
+        }
+        int maxFlipGain = 0;
+        int currentGain = 0;
+        for (int val : arr) {
+            int gain = (val == 0 ? 1 : -1);
+            currentGain = Math.max(0, currentGain + gain);
+            maxFlipGain = Math.max(maxFlipGain, currentGain);
+        }
+        return origOnes + maxFlipGain;
+    }
+};
