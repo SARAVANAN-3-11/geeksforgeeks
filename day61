@@ -1,0 +1,20 @@
+class Solution {
+    public boolean canSplit(int arr[]) {
+        long total = 0;
+        for (int x : arr) total += x;
+
+        // Total sum must be even to split into two equal parts
+        if (total % 2 != 0) return false;
+
+        long half = total / 2;
+        long leftSum = 0;
+
+        // Do not check the very last element because both subarrays must be non‑empty
+        for (int i = 0; i < arr.length - 1; i++) {
+            leftSum += arr[i];
+            if (leftSum == half) return true;
+        }
+
+        return false;
+    }
+}
