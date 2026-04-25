@@ -1,0 +1,25 @@
+class Solution {
+    public ArrayList<Integer> reducePairs(int[] arr) {
+        Deque<Integer> deque = new ArrayDeque<>();
+        for (int num : arr) {
+            while (!deque.isEmpty() && deque.peekLast() * num < 0) {
+                int prev = deque.removeLast();
+                if (Math.abs(prev) == Math.abs(num)) {
+                    // equal abs, both removed, continue
+                    num = 0;
+                    break;
+                } else if (Math.abs(prev) > Math.abs(num)) {
+                    // prev larger, push back prev, num will not be pushed
+                    deque.addLast(prev);
+                    num = 0;
+                    break;
+                }
+                // else prev smaller, continue to pop next
+            }
+            if (num != 0) {
+                deque.addLast(num);
+            }
+        }
+        return new ArrayList<>(deque);
+    }
+}
