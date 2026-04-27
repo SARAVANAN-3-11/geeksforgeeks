@@ -1,0 +1,23 @@
+class Solution {
+    public int smallestSubstring(String s) {
+        int res = Integer.MAX_VALUE;
+        // Stores the last seen index of '0', '1', and '2'
+        int zeroIdx = -1, oneIdx = -1, twoIdx = -1;
+        
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == '0') zeroIdx = i;
+            else if (c == '1') oneIdx = i;
+            else if (c == '2') twoIdx = i;
+            
+            // If all have been seen, calculate current window size
+            if (zeroIdx != -1 && oneIdx != -1 && twoIdx != -1) {
+                int minIdx = Math.min(zeroIdx, Math.min(oneIdx, twoIdx));
+                int maxIdx = Math.max(zeroIdx, Math.max(oneIdx, twoIdx));
+                res = Math.min(res, maxIdx - minIdx + 1);
+            }
+        }
+        
+        return (res == Integer.MAX_VALUE) ? -1 : res;
+    }
+};
