@@ -1,0 +1,37 @@
+class Solution {
+    public int minSwaps(int[] arr) {
+        int n = arr.length;
+        
+        // Count total number of 1s
+        int totalOnes = 0;
+        for (int x : arr) {
+            totalOnes += x;
+        }
+        
+        // If no 1s, return -1
+        if (totalOnes == 0) {
+            return -1;
+        }
+        
+        // Size of the window is the total number of 1s
+        int windowSize = totalOnes;
+        int countOnes = 0;
+        
+        // Count 1s in first window
+        for (int i = 0; i < windowSize; i++) {
+            countOnes += arr[i];
+        }
+        
+        int maxOnes = countOnes;
+        
+        // Slide the window over the array
+        for (int i = windowSize; i < n; i++) {
+            countOnes += arr[i];           // add new element
+            countOnes -= arr[i - windowSize]; // remove leftmost element
+            maxOnes = Math.max(maxOnes, countOnes);
+        }
+        
+        // Minimum swaps = number of 0s in the best window
+        return windowSize - maxOnes;
+    }
+}
