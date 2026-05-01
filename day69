@@ -1,0 +1,27 @@
+import java.util.*;
+
+class Solution {
+    static ArrayList<Integer> kthLargest(int[] arr, int k) {
+        ArrayList<Integer> res = new ArrayList<>();
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>(); // min‑heap for k largest elements
+        
+        for (int val : arr) {
+            if (minHeap.size() < k) {
+                minHeap.offer(val);
+            } else {
+                if (val > minHeap.peek()) {
+                    minHeap.poll();
+                    minHeap.offer(val);
+                }
+            }
+            
+            if (minHeap.size() >= k) {
+                res.add(minHeap.peek()); // kth largest = root of min‑heap
+            } else {
+                res.add(-1);
+            }
+        }
+        
+        return res;
+    }
+}
