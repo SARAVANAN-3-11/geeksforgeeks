@@ -1,0 +1,27 @@
+import java.util.*;
+
+class Solution {
+    static int countBits(int n) {
+        return Integer.bitCount(n);
+    }
+
+    ArrayList<Integer> sortBySetBitCount(int[] arr) {
+        ArrayList<ArrayList<Integer>> buckets = new ArrayList<>();
+
+        for (int i = 0; i < 32; i++) {
+            buckets.add(new ArrayList<>());
+        }
+
+        for (int x : arr) {
+            int setBits = countBits(x);
+            buckets.get(setBits).add(x);
+        }
+
+        ArrayList<Integer> res = new ArrayList<>();
+        for (int i = 31; i >= 0; i--) {
+            res.addAll(buckets.get(i));
+        }
+
+        return res;
+    }
+}
