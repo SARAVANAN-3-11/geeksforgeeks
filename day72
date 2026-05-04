@@ -1,0 +1,16 @@
+class Solution {
+    public boolean isBinaryPalindrome(int n) {
+        if (n == 0) return true;
+        
+        // Reverse the bits of n
+        int reversed = 0;
+        int original = n;
+        while (n > 0) {
+            reversed = (reversed << 1) | (n & 1);
+            n >>= 1;
+        }
+        
+        // Check if original equals reversed
+        return original == reversed;
+    }
+}
