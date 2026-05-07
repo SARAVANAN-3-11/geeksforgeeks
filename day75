@@ -1,0 +1,41 @@
+/*
+Definition for Node
+class Node {
+    int data;
+    Node left;
+    Node right;
+
+    Node(int x) {
+        data = x;
+        left = right = null;
+    }
+}
+*/
+class Solution {
+    public boolean isSubTree(Node root1, Node root2) {
+        // Empty subtree is always a subtree
+        if (root2 == null) return true;
+        
+        // If main tree is empty but subtree isn't, false
+        if (root1 == null) return false;
+        
+        // Check if trees match at current root1 node
+        if (areIdentical(root1, root2)) return true;
+        
+        // Recursively check left and right subtrees
+        return isSubTree(root1.left, root2) || isSubTree(root1.right, root2);
+    }
+    
+    private boolean areIdentical(Node t1, Node t2) {
+        // Both null: identical
+        if (t1 == null && t2 == null) return true;
+        
+        // One null but not both: not identical
+        if (t1 == null || t2 == null) return false;
+        
+        // Check data and both children
+        return t1.data == t2.data && 
+               areIdentical(t1.left, t2.left) && 
+               areIdentical(t1.right, t2.right);
+    }
+}
