@@ -1,0 +1,54 @@
+import java.util.*;
+
+class Solution {
+    private String s;
+    private int n;
+    private Set<String> result = new HashSet<>();
+
+    public List<String> validParenthesis(String s) {
+        this.s = s;
+        this.n = s.length();
+        
+        int lremove = 0, rremove = 0;
+        for (char c : s.toCharArray()) {
+            if (c == '(') {
+                lremove++;
+            } else if (c == ')') {
+                if (lremove > 0) {
+                    lremove--;
+                } else {
+                    rremove++;
+                }
+            }
+        }
+        
+        dfs(0, lremove, rremove, 0, 0, "");
+        List<String> ans = new ArrayList<>(result);
+        Collections.sort(ans);
+        return ans;
+    }
+    
+    private void dfs(int i, int lremove, int rremove, int left, int right, String path) {
+        if (i == n) {
+            if (lremove == 0 && rremove == 0) {
+                result.add(path);
+            }
+            return;
+        }
+        
+        if (n - i < lremove + rremove || left < right) {
+            return;
+        }
+        
+        char c = s.charAt(i);
+        if (c == '(' && lremove > 0) {
+            dfs(i + 1, lremove - 1, rremove, left, right, path);
+        }
+        if (c == ')' && rremove > 0) {
+            dfs(i + 1, lremove, rremove - 1, left, right, path);
+        }
+        int newLeft = left + (c == '(' ? 1 : 0);
+        int newRight = right + (c == ')' ? 1 : 0);
+        dfs(i + 1, lremove, rremove, newLeft, newRight, path + c);
+    }
+}
