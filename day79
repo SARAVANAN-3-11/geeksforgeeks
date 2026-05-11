@@ -1,0 +1,44 @@
+class Solution {
+    public boolean palindromePair(String[] arr) {
+        if (arr == null || arr.length < 2) return false;
+        
+        java.util.Map<String, Integer> revMap = new java.util.HashMap<>();
+        for (int i = 0; i < arr.length; i++) {
+            revMap.put(new StringBuilder(arr[i]).reverse().toString(), i);
+        }
+        
+        for (int i = 0; i < arr.length; i++) {
+            String word = arr[i];
+            
+            // Case 1: "" + palindrome
+            if (revMap.containsKey("") && revMap.get("") != i && isPalindrome(word)) {
+                return true;
+            }
+            
+            // Case 2: prefix matches reversed other + suffix palindrome
+            for (int j = 1; j <= word.length(); j++) {
+                String prefix = word.substring(0, j);
+                String suffix = word.substring(j);
+                
+                if (revMap.containsKey(prefix) && revMap.get(prefix) != i && isPalindrome(suffix)) {
+                    return true;
+                }
+                
+                if (revMap.containsKey(suffix) && revMap.get(suffix) != i && isPalindrome(prefix)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    private boolean isPalindrome(String s) {
+        int left = 0, right = s.length() - 1;
+        while (left < right) {
+            if (s.charAt(left++) != s.charAt(right--)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
