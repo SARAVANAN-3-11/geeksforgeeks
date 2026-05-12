@@ -1,0 +1,84 @@
+import java.util.*;
+
+class Solution {
+    // Helper: GCD of two numbers
+    private long gcd(long a, long b) {
+        if (b == 0) return a;
+        return gcd(b, a % b);
+    }
+
+    // Helper: LCM of two numbers
+    private long lcm(long a, long b) {
+        if (a == 0 || b == 0) return 0;
+        return (a / gcd(a, b)) * b;
+    }
+
+    // Segment tree array
+    private long[] tree;
+    private int n;
+
+    // Build the segment tree
+    private void build(int node, int start, int end, int[] arr) {
+        if (start == end) {
+            tree[node] = arr[start];
+            return;
+        }
+        int mid = (start + end) / 2;
+        build(2 * node + 1, start, mid, arr);
+        build(2 * node + 2, mid + 1, end, arr);
+        tree[node] = lcm(tree[2 * node + 1], tree[2 * node + 2]);
+    }
+
+    // Update the segment tree at index 'pos' to 'val'
+    private void update(int node, int start, int end, int pos, int val) {
+        if (start == end) {
+            tree[node] = val;
+            return;
+        }
+        int mid = (start + end) / 2;
+        if (pos <= mid) {
+            update(2 * node + 1, start, mid, pos, val);
+        } else {
+            update(2 * node + 2, mid + 1, end, pos, val);
+        }
+        tree[node] = lcm(tree[2 * node + 1], tree[2 * node + 2]);
+    }
+
+    // Query LCM in range [l, r]
+    private long query(int node, int start, int end, int l, int r) {
+        if (r < start || end < l) return 1; // neutral element for LCM
+        if (l <= start && end <= r) return tree[node];
+        int mid = (start + end) / 2;
+        long leftLcm  = query(2 * node + 1, start, mid, l, r);
+        long rightLcm = query(2 * node + 2, mid + 1, end, l, r);
+        return lcm(leftLcm, rightLcm);
+    }
+
+    public ArrayList<Long> RangeLCMQuery(int[] arr, int[][] queries) {
+        n = arr.length;
+        tree = new long[4 * n]; // enough space for segment tree
+
+        // Build the segment tree once
+        build(0, 0, n - 1, arr);
+
+        ArrayList<Long> res = new ArrayList<>();
+
+        for (int[] q : queries) {
+            if (q[0] == 1) {
+                // Update: [1, index, value]
+                int idx = q[1];
+                int val = q[2];
+                arr[idx] = val; // keep arr in sync
+                update(0, 0, n - 1, idx, val);
+            } else if (q[0] == 2) {
+                // Range query: [2, L, R]
+                int L = q[1];
+                int R = q[2];
+                long ans = query(0, 0, n - 1, L, R);
+                res.add(ans);
+            }
+        }
+
+        return res;
+    }
+}dasy
