@@ -1,0 +1,46 @@
+class Solution {
+    private void dfs(int v, boolean[] visited, int[][] adj) {
+        visited[v] = true;
+        for (int neighbor : adj[v]) {
+            if (!visited[neighbor]) {
+                dfs(neighbor, visited, adj);
+            }
+        }
+    }
+
+    public int findMotherVertex(int V, int[][] edges) {
+        // Build adjacency list
+        int[][] adj = new int[V][];
+        int[] degrees = new int[V];
+        for (int[] edge : edges) {
+            degrees[edge[0]]++;
+        }
+        for (int i = 0; i < V; i++) {
+            adj[i] = new int[degrees[i]];
+        }
+        int[] ptrs = new int[V];
+        for (int[] edge : edges) {
+            int u = edge[0], v = edge[1];
+            adj[u][ptrs[u]++] = v;
+        }
+
+        // Step 1: Find candidate (last finished in DFS)
+        boolean[] visited = new boolean[V];
+        int candidate = 0;
+        for (int i = 0; i < V; i++) {
+            if (!visited[i]) {
+                dfs(i, visited, adj);
+                candidate = i;
+            }
+        }
+
+        // Step 2: Verify candidate reaches all
+        visited = new boolean[V];
+        dfs(candidate, visited, adj);
+        for (boolean b : visited) {
+            if (!b) return -1;
+        }
+
+        return candidate;
+    }
+}
