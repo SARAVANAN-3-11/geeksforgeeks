@@ -1,0 +1,26 @@
+class Solution {
+    public int optimalKeys(int n) {
+        if (n <= 3) {
+            return n;
+        }
+
+        // dp[i] = max A's achievable with i key presses
+        int[] dp = new int[n + 1];
+        for (int i = 0; i <= n; i++) {
+            dp[i] = i; // just pressing A every time
+        }
+
+        // For each total key presses from 4 to n
+        for (int i = 4; i <= n; i++) {
+            // Try all possible places where we did Ctrl+A, Ctrl+C and at least one Ctrl+V
+            for (int j = 1; j <= i - 3; j++) {
+                // j = number of keys used to produce dp[j] A's
+                // then 3 keys used for select, copy, and first paste
+                // remaining = i - j - 1 pastes, so total A's = dp[j] * (i - j - 1)
+                dp[i] = Math.max(dp[i], dp[j] * (i - j - 1));
+            }
+        }
+
+        return dp[n];
+    }
+}
